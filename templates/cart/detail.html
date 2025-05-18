@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Your Shopping Cart{% endblock %}
+
+{% block content %}
+    <h1>Your Shopping Cart</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Remove</th>
+                <th>Unit Price</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart %}
+                <tr>
+                    <td>{{ item.product.name }}</td>
+                    <td>
+                        <form action="{% url 'cart_add' item.product.id %}" method="post">
+                            {% csrf_token %}
+                            {{ item.update_quantity_form.quantity }}
+                            {{ item.update_quantity_form.update }}
+                            <button type="submit" class="btn btn-sm btn-info">Update</button>
+                        </form>
+                    </td>
+                    <td><a href="{% url 'cart_remove' item.product.id %}" class="btn btn-sm btn-danger">Remove</a></td>
+                    <td>${{ item.price }}</td>
+                    <td>${{ item.total_price }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="5">Your cart is empty</td>
+                </tr>
+            {% endfor %}
+            {% if cart.get_total_price %}
+                <tr>
+                    <td colspan="4">Total</td>
+                    <td>${{ cart.get_total_price }}</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+
+    {% if cart.get_total_price %}
+        <div class="text-end">
+            <a href="{% url 'send_cart' %}" class="btn btn-success">Send Order</a>
+        </div>
+    {% endif %}
+
+    <p class="text-end">
+        <a href="{% url 'product_list' %}" class="btn btn-secondary">Continue Shopping</a>
+    </p>
+{% endblock %}

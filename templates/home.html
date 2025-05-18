@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Home - My Shop{% endblock %}
+
+{% block content %}
+    <h1>Welcome to My Shop</h1>
+    {% if not user.is_authenticated %}
+        <div class="alert alert-info">
+            Please <a href="{% url 'login' %}" class="alert-link">login</a> or
+            <a href="{% url 'register' %}" class="alert-link">register</a> to add products to your cart.
+        </div>
+    {% endif %}
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <h2>Featured Products</h2>
+            <div class="row">
+                {% for product in featured_products %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ product.name }}</h5>
+                                <p class="card-text">${{ product.price }}</p>
+                                <a href="{{ product.get_absolute_url }}" class="btn btn-primary">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

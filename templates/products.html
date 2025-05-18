@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Products - My Shop{% endblock %}
+
+{% block content %}
+    <h1>Products</h1>
+    {% if category %}
+        <h2>{{ category.name }}</h2>
+    {% endif %}
+
+    <div class="row mt-4">
+        {% for product in products %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text">${{ product.price }}</p>
+                        <p class="card-text">{{ product.description|truncatewords:20 }}</p>
+                        <a href="{{ product.get_absolute_url }}" class="btn btn-primary">View Details</a>
+                        {% if user.is_authenticated %}
+                            <form action="{% url 'cart_add' product.id %}" method="post" class="mt-2">
+                                {% csrf_token %}
+                                {{ cart_product_form }}
+                                <button type="submit" class="btn btn-success">Add to cart</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <p>No products found.</p>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
